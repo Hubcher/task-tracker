@@ -1,5 +1,4 @@
 package com.example.service;
 
-public class ServiceTask {
-
+public class TaskStateService {
 }
