@@ -1,0 +1,21 @@
+# Для удобства свой профиль, для подключения к своей тестовой бд
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/todoProjectDB
+    username: postgres
+    password: 123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        hbm2ddl:
+          auto: validate
+
+
+
+
+
