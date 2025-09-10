@@ -1,9 +1,7 @@
 package com.example.database.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -13,6 +11,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "task_state")
 public class TaskStateModel implements BaseEntity<Long> {
 
@@ -41,37 +41,5 @@ public class TaskStateModel implements BaseEntity<Long> {
     @Override
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public ProjectModel getProject() {
-        return project;
-    }
-
-    public void setProject(ProjectModel project) {
-        this.project = project;
-    }
-
-    public List<TaskModel> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(List<TaskModel> tasks) {
-        this.tasks = tasks;
     }
 }
