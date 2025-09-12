@@ -1,23 +1,49 @@
 package com.example.api.exceptions;
 
-
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+@Log4j2
+@ControllerAdvice
+public class CustomExceptionHandler {
 
-@Slf4j
-@ControllerAdvice("com.example.api.controllers")
-public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorDTO> handleNotFound(NotFoundException ex) {
+        log.warn("NotFoundException: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ErrorDTO.builder()
+                        .error("NOT_FOUND")
+                        .errorDescription(ex.getMessage())
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorDTO> handleBadRequest(BadRequestException ex) {
+        log.warn("BadRequestException: {}", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorDTO.builder()
+                        .error("BAD_REQUEST")
+                        .errorDescription(ex.getMessage())
+                        .build()
+                );
+    }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) throws Exception {
+    public ResponseEntity<ErrorDTO> handleAllOthers(Exception ex) {
+        log.error("Unexpected exception", ex);
 
-        log.error("Exception during execution of application: ", ex);
-
-        return handleException(ex, request);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ErrorDTO.builder()
+                        .error("INTERNAL_SERVER_ERROR")
+                        .errorDescription(ex.getMessage())
+                        .build()
+                );
     }
 }
+

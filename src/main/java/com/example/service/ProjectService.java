@@ -62,6 +62,8 @@ public class ProjectService {
             project = ProjectModel.builder().build();
         }
 
+
+        // TODO: Доделать
         optionalProjectName
                 .ifPresent(projectName -> {
                     projectRepository
@@ -75,7 +77,7 @@ public class ProjectService {
 
         final ProjectModel savedProject = projectRepository.saveAndFlush(project);
 
-        return projectDtoMapper.makeProjectDto(project);
+        return projectDtoMapper.makeProjectDto(savedProject);
     }
 
     @CheckProjectExists // уже AOP - проверяет, что проект с таким ID существует, иначе выбрасывает исключение
