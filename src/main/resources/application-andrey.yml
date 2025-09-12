@@ -1,5 +1,3 @@
-# Для удобства свой профиль, для подключения к своей тестовой бд
-
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/todoProjectDB
@@ -13,7 +11,7 @@ spring:
         show_sql: true
         format_sql: true
         hbm2ddl:
-          auto: validate
+          auto: update
 
 
 
