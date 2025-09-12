@@ -24,14 +24,4 @@ public class ProjectModel implements BaseEntity<Integer> {
     @Builder.Default
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     List<TaskStateModel> taskStates = new ArrayList<>();
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }

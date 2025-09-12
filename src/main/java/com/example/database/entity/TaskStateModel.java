@@ -32,14 +32,4 @@ public class TaskStateModel implements BaseEntity<Long> {
     @Builder.Default
     @OneToMany(mappedBy = "taskState", cascade = CascadeType.ALL, orphanRemoval = true)
     List<TaskModel> tasks = new ArrayList<>();
-
-    @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

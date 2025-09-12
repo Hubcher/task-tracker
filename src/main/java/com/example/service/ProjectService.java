@@ -1,6 +1,7 @@
 package com.example.service;
 
 
+import com.example.aop.CheckProjectExists;
 import com.example.api.dto.AckDto;
 import com.example.api.dto.ProjectDto;
 import com.example.api.exceptions.BadRequestException;
@@ -30,20 +31,15 @@ public class ProjectService {
         optionalPrefixName = optionalPrefixName
                 .filter(prefixName -> !prefixName.trim().isEmpty());
 
-        List<ProjectModel> projectStream = optionalPrefixName
+        List<ProjectModel> projectList = optionalPrefixName
                 .map(projectRepository::streamAllByNameStartsWithIgnoreCase)
                 .orElseGet(projectRepository::streamAllBy);
 
-        return projectStream.stream().map(projectDtoMapper::makeProjectDto)
+        return projectList.stream().map(projectDtoMapper::makeProjectDto)
                 .collect(Collectors.toList());
     }
 
     public ProjectDto createOrUpdateProject(Optional<Long> optionalProjectId, Optional<String> optionalProjectName) {
-
-        /*
-         * create: /api/projects?project_name=
-         * update: /api/projects/52?project_name=
-         * */
 
         final ProjectModel project;
 
@@ -82,14 +78,14 @@ public class ProjectService {
         return projectDtoMapper.makeProjectDto(project);
     }
 
+    @CheckProjectExists // уже AOP - проверяет, что проект с таким ID существует, иначе выбрасывает исключение
     public AckDto deleteProject(Long projectId) {
-        projectRepository
-                .findById(projectId)
-                .orElseThrow(() ->
-                        new NotFoundException(
-                                "Project with ID %s not found".formatted(projectId)
-                        ));
-
+//        projectRepository
+//                .findById(projectId)
+//                .orElseThrow(() ->
+//                        new NotFoundException(
+//                                "Project with ID %s not found".formatted(projectId)
+//                        ));
         projectRepository.deleteById(projectId);
         return AckDto.getAnswer(true);
     }
