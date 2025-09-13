@@ -35,19 +35,17 @@ public class TaskStateController {
     @DeleteMapping(DELETE_TASK_STATE)
     public AckDto deleteTaskState(
             @PathVariable(name = "project_id") Long projectId,
-            @PathVariable(name = "task_state_id") Long taskStateId
-    ) {
+            @PathVariable(name = "task_state_id") Long taskStateId) {
         return taskStateService.deleteTaskState(projectId, taskStateId);
     }
 
-    // TODO: Доделать
-//    @PatchMapping(UPDATE_TASK_STATE)
-//    public TaskStateDto updateTaskState(
-//            @PathVariable(name = "project_id") Long projectId,
-//            @PathVariable(name = "task_state_id") Long taskStateId,
-//            @RequestParam(name = "task_state_name") String taskStateName) {
-//
-//    }
+    @PatchMapping(UPDATE_TASK_STATE)
+    public TaskStateDto updateTaskState(
+            @PathVariable(name = "project_id") Long projectId,
+            @PathVariable(name = "task_state_id") Long taskStateId,
+            @RequestParam(name = "task_state_name") String taskStateName) {
+        return taskStateService.updateTaskState(projectId, taskStateId, taskStateName);
+    }
 
 
 }

@@ -63,7 +63,6 @@ public class ProjectService {
         }
 
 
-        // TODO: Доделать
         optionalProjectName
                 .ifPresent(projectName -> {
                     projectRepository
@@ -80,14 +79,8 @@ public class ProjectService {
         return projectDtoMapper.makeProjectDto(savedProject);
     }
 
-    @CheckProjectExists // уже AOP - проверяет, что проект с таким ID существует, иначе выбрасывает исключение
+    @CheckProjectExists
     public AckDto deleteProject(Long projectId) {
-//        projectRepository
-//                .findById(projectId)
-//                .orElseThrow(() ->
-//                        new NotFoundException(
-//                                "Project with ID %s not found".formatted(projectId)
-//                        ));
         projectRepository.deleteById(projectId);
         return AckDto.getAnswer(true);
     }

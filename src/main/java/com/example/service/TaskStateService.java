@@ -68,4 +68,32 @@ public class TaskStateService {
         taskStateRepository.deleteById(taskStateId);
         return AckDto.getAnswer(true);
     }
+
+    @CheckProjectExists
+    @CheckTaskStateExists
+    public TaskStateDto updateTaskState(Long projectId, Long taskStateId, String taskStateName) {
+
+        if (taskStateName.trim().isEmpty()) {
+            throw new BadRequestException("Task state name can't be empty");
+        }
+
+        TaskStateModel taskState = taskStateRepository.findByIdAndProjectId(taskStateId, projectId)
+                .orElseThrow(() -> new BadRequestException(
+                        "Task state \"%d\" not found in project \"%d\"".formatted(taskStateId, projectId)
+                ));
+
+        taskStateRepository.findTaskStateModelByProjectIdAndNameContainsIgnoreCase(projectId, taskStateName)
+                .filter(anotherTaskState -> anotherTaskState.getId().equals(taskStateId))
+                .ifPresent(anotherTaskState -> {
+                    throw new BadRequestException("Task state \"%s\" already exists in project %d"
+                            .formatted(taskStateName, projectId));
+                });
+
+        taskState.setName(taskStateName);
+
+        var savedTaskState = taskStateRepository.saveAndFlush(taskState);
+
+        return taskStateDtoMapper.makeTaskStateDto(savedTaskState);
+
+    }
 }
