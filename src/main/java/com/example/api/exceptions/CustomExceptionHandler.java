@@ -36,7 +36,7 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDTO> handleAllOthers(Exception ex) {
-        log.error("Unexpected exception", ex);
+        log.error("Unexpected exception: {} - {}", ex.getClass().getName(), ex.getMessage(), ex);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ErrorDTO.builder()

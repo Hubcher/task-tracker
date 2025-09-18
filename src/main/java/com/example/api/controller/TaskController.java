@@ -2,7 +2,9 @@ package com.example.api.controller;
 
 
 import com.example.api.dto.AckDto;
-import com.example.api.dto.TaskDto;
+import com.example.api.dto.TaskCreateDto;
+import com.example.api.dto.TaskReadDto;
+import com.example.api.dto.TaskUpdateDto;
 import com.example.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +22,18 @@ public class TaskController {
     private static final String UPDATE = "/{task_id}";
 
     @GetMapping
-    public List<TaskDto> getTasks(
+    public List<TaskReadDto> getTasks(
             @PathVariable(name = "project_id") Long projectId,
             @PathVariable(name = "task_state_id") Long taskStateId) {
         return taskService.getTasks(projectId, taskStateId);
     }
 
     @PostMapping
-    public TaskDto createTask(
+    public TaskReadDto createTask(
             @PathVariable(name = "project_id") Long projectId,
             @PathVariable(name = "task_state_id") Long taskStateId,
-            @RequestParam(name = "task_name") String taskName) {
-        return taskService.createTask(projectId, taskStateId, taskName);
+            @RequestBody TaskCreateDto dto) {
+        return taskService.createTask(projectId, taskStateId, dto);
     }
 
     @DeleteMapping(DELETE_TASK)
@@ -43,12 +45,12 @@ public class TaskController {
     }
 
     @PatchMapping(UPDATE)
-    public TaskDto updateTask(
+    public TaskReadDto updateTask(
             @PathVariable(name = "project_id") Long projectId,
             @PathVariable(name = "task_state_id") Long taskStateId,
             @PathVariable(name = "task_id") Long taskId,
-            @RequestParam(name = "task_name") String taskName) {
-        return taskService.updateTask(projectId,taskStateId, taskId, taskName);
+            @RequestBody TaskUpdateDto dto) {
+        return taskService.updateTask(projectId,taskStateId, taskId, dto);
 
     }
 

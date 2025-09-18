@@ -4,7 +4,9 @@ import com.example.aop.CheckProjectExists;
 import com.example.aop.CheckTaskExists;
 import com.example.aop.CheckTaskStateExists;
 import com.example.api.dto.AckDto;
-import com.example.api.dto.TaskDto;
+import com.example.api.dto.TaskCreateDto;
+import com.example.api.dto.TaskReadDto;
+import com.example.api.dto.TaskUpdateDto;
 import com.example.api.exceptions.BadRequestException;
 import com.example.api.factories.TaskDtoMapper;
 import com.example.database.entity.TaskModel;
@@ -30,7 +32,7 @@ public class TaskService {
 
     @CheckProjectExists
     @CheckTaskStateExists
-    public List<TaskDto> getTasks(Long projectId, Long taskStateId) {
+    public List<TaskReadDto> getTasks(Long projectId, Long taskStateId) {
         return taskRepository
                 .findTaskModelByTaskStateId(taskStateId)
                 .stream()
@@ -38,29 +40,24 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
-    // TODO сделать через RequestBody и создать TaskCreateDto и TaskUpdateDto
     @CheckProjectExists
     @CheckTaskStateExists
-    public TaskDto createTask(Long projectId, Long taskStateId, String taskName) {
+    public TaskReadDto createTask(Long projectId, Long taskStateId, TaskCreateDto dto) {
 
-        if (taskName.trim().isEmpty()) {
+        if (dto.getName() == null || dto.getName().trim().isEmpty()) {
             throw new BadRequestException("Task name can't be empty");
         }
 
         TaskStateModel taskState = taskStateRepository.getReferenceById(taskStateId);
 
         for (TaskModel task : taskState.getTasks()) {
-            if (task.getName().equalsIgnoreCase(taskName)) {
-                throw new BadRequestException("Task \"%s\" is already exists".formatted(taskName));
+            if (task.getName().equalsIgnoreCase(dto.getName())) {
+                throw new BadRequestException("Task \"%s\" is already exists".formatted(dto.getName()));
             }
         }
 
-        TaskModel savedTask = taskRepository.saveAndFlush(
-                TaskModel.builder()
-                        .taskState(taskState)
-                        .name(taskName)
-                        .build()
-        );
+        TaskModel task = taskDtoMapper.makeTaskEntity(dto, taskState);
+        TaskModel savedTask = taskRepository.saveAndFlush(task);
 
         return taskDtoMapper.makeTaskDto(savedTask);
     }
@@ -76,21 +73,16 @@ public class TaskService {
 
     }
 
-
     @CheckProjectExists
     @CheckTaskStateExists
     @CheckTaskExists
-    public TaskDto updateTask(Long projectId, Long taskStateId, Long taskId, String taskName) {
-
-        if (taskName.trim().isEmpty()) {
-            throw new BadRequestException("Task name can't be empty");
-        }
+    public TaskReadDto updateTask(Long projectId, Long taskStateId, Long taskId, TaskUpdateDto dto) {
 
         TaskModel task = taskRepository.findByIdAndTaskStateId(taskId, taskStateId)
                 .orElseThrow(() -> new BadRequestException(
                         "Task \"%d\" not found in TaskState \"%d\"".formatted(taskId, taskStateId)));
 
-        task.setName(taskName);
+        taskDtoMapper.updateTaskEntity(dto, task);
 
         var savedTask = taskRepository.saveAndFlush(task);
 
