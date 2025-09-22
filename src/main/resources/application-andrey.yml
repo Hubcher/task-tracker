@@ -1,6 +1,8 @@
-# Для удобства свой профиль, для подключения к своей тестовой бд
-
 spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
   datasource:
     url: jdbc:postgresql://localhost:5432/todoProjectDB
     username: postgres
@@ -15,6 +17,12 @@ spring:
         hbm2ddl:
           auto: validate
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
 
 
 
