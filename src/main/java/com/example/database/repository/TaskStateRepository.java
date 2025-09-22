@@ -15,4 +15,7 @@ public interface TaskStateRepository  extends JpaRepository<TaskStateModel, Long
     List<TaskStateModel> findTaskStateModelByProjectId(Long projectId);
 
     Optional<TaskStateModel> findByIdAndProjectId(Long taskStateId, Long projectId);
+
+    @Override
+    Optional<TaskStateModel> findById(Long id);
 }
